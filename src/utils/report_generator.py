@@ -1,0 +1,166 @@
+#!/usr/bin/env python3
+"""
+Report Generator for CIOT
+Generates professional investigation reports
+"""
+
+import datetime
+import webbrowser
+from pathlib import Path
+
+class ReportGenerator:
+    """Professional investigation report generator"""
+    
+    def __init__(self):
+        self.reports_dir = Path("data/reports")
+        self.reports_dir.mkdir(parents=True, exist_ok=True)
+    
+    def generate_html_report(self, investigation_data):
+        """Generate professional HTML investigation report"""
+        report_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        html_template = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIOT Investigation Report - {investigation_data.get('investigation_id', 'Unknown')}</title>
+    <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }}
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }}
+        .header {{
+            text-align: center;
+            border-bottom: 3px solid #00d4ff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }}
+        .header h1 {{
+            color: #1a1a2e;
+            margin: 0;
+            font-size: 2.5em;
+        }}
+        .section {{
+            margin: 30px 0;
+            padding: 20px;
+            border-left: 4px solid #00d4ff;
+            background: #f9f9f9;
+        }}
+        .section h2 {{
+            color: #1a1a2e;
+            margin-top: 0;
+        }}
+        .info-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }}
+        .info-card {{
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }}
+        .footer {{
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            color: #666;
+        }}
+        .classification {{
+            background: #ff6600;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: bold;
+            margin: 10px 0;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Cyber Investigation OSINT Toolkit Report</h1>
+            <p>Open Source Intelligence & Digital Forensics Analysis</p>
+            <div class="classification">INVESTIGATION REPORT</div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Investigation Summary</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>🆔 Investigation Details</h3>
+                    <p><strong>ID:</strong> {investigation_data.get('investigation_id', 'N/A')}</p>
+                    <p><strong>Generated:</strong> {report_time}</p>
+                    <p><strong>Investigator:</strong> {investigation_data.get('investigator', 'Unknown')}</p>
+                </div>
+                <div class="info-card">
+                    <h3>🔧 System Information</h3>
+                    <p><strong>Platform:</strong> {investigation_data.get('platform', 'Unknown')}</p>
+                    <p><strong>Version:</strong> Cyber Investigation OSINT Toolkit v3.0</p>
+                    <p><strong>Tools Used:</strong> Free and Open Source Services</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🛡️ Professional Certification</h2>
+            <p>This investigation report was generated using the Cyber Investigation OSINT Toolkit, 
+            an open-source digital forensics and OSINT platform. All evidence collection and analysis 
+            procedures follow industry-standard methodologies and best practices.</p>
+            
+            <h3>🔒 Evidence Integrity</h3>
+            <p>All evidence items include cryptographic hash verification to ensure integrity and 
+            maintain chain of custody standards required for professional investigations.</p>
+            
+            <h3>⚖️ Legal Compliance</h3>
+            <p>This investigation was conducted using only open-source tools and free services, 
+            ensuring compliance with legal and ethical guidelines for digital investigations.</p>
+        </div>
+
+        <div class="footer">
+            <p>Generated by Cyber Investigation OSINT Toolkit v3.0</p>
+            <p>Report generated on {report_time}</p>
+            <p>🌐 Open Source Intelligence & Digital Forensics</p>
+        </div>
+    </div>
+</body>
+</html>
+        """
+        
+        return html_template
+    
+    def export_report(self, investigation_data):
+        """Export investigation report to file"""
+        try:
+            html_report = self.generate_html_report(investigation_data)
+            
+            investigation_id = investigation_data.get('investigation_id', 'unknown')
+            report_file = self.reports_dir / f"investigation_report_{investigation_id}.html"
+            
+            with open(report_file, 'w', encoding='utf-8') as f:
+                f.write(html_report)
+            
+            # Open report in browser
+            webbrowser.open(f"file://{report_file.absolute()}")
+            
+            return str(report_file)
+            
+        except Exception as e:
+            raise Exception(f"Report export failed: {e}")

@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  ciot:
+    build: .
+    container_name: ciot-toolkit
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config:/app/config
+    environment:
+      - PYTHONPATH=/app/src
+      - DISPLAY=${DISPLAY:-:0}
+    network_mode: host
+    # For GUI applications, you might need to mount X11 socket
+    # volumes:
+    #   - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    # environment:
+    #   - DISPLAY=${DISPLAY}
+    
+  # Optional: Add a web interface service in the future
+  # ciot-web:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.web
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - ciot
+  #   volumes:
+  #     - ./data:/app/data:ro
+
+volumes:
+  ciot_data:
+    driver: local
+  ciot_logs:
+    driver: local
+  ciot_config:
+    driver: local
